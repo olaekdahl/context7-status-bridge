@@ -19,3 +19,4 @@ class IncidentSummary(BaseModel):
     open_count: int
     major_open: int
     sources: list[str]
+    affected_components: list[str]

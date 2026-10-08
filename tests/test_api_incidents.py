@@ -58,4 +58,5 @@ def test_incidents_summary_endpoint(tmp_path: Path, monkeypatch) -> None:
             "open_count": 1,
             "major_open": 1,
             "sources": ["statuspage"],
+            "affected_components": ["Public API"],
         }

@@ -1,0 +1,99 @@
+diff --git a/src/status_bridge/cli.py b/src/status_bridge/cli.py
+index ae43052..127f2d8 100644
+--- a/src/status_bridge/cli.py
++++ b/src/status_bridge/cli.py
+@@ -17,6 +17,7 @@ class SummaryOutput:
+     open_count: int
+     major_open: int
+     sources: list[str]
++    affected_components: list[str]
+ 
+ 
+ def import_fixture() -> int:
+diff --git a/src/status_bridge/models.py b/src/status_bridge/models.py
+index 612e7cc..fa33b16 100644
+--- a/src/status_bridge/models.py
++++ b/src/status_bridge/models.py
+@@ -19,3 +19,4 @@ class IncidentSummary(BaseModel):
+     open_count: int
+     major_open: int
+     sources: list[str]
++    affected_components: list[str]
+diff --git a/src/status_bridge/service.py b/src/status_bridge/service.py
+index f20bbf1..995d093 100644
+--- a/src/status_bridge/service.py
++++ b/src/status_bridge/service.py
+@@ -11,9 +11,17 @@ def summarize_incidents(incidents: list[Incident]) -> IncidentSummary:
+         if incident.impact in {"major", "critical"}
+     ]
+     sources = sorted({incident.source for incident in incidents})
++    affected_components = sorted(
++        {
++            name
++            for incident in open_incidents
++            for name in incident.component_names
++        }
++    )
+     return IncidentSummary(
+         total=len(incidents),
+         open_count=len(open_incidents),
+         major_open=len(major_open),
+         sources=sources,
++        affected_components=affected_components,
+     )
+diff --git a/tests/test_api_incidents.py b/tests/test_api_incidents.py
+index f90563e..0f0fbf2 100644
+--- a/tests/test_api_incidents.py
++++ b/tests/test_api_incidents.py
+@@ -58,4 +58,5 @@ def test_incidents_summary_endpoint(tmp_path: Path, monkeypatch) -> None:
+             "open_count": 1,
+             "major_open": 1,
+             "sources": ["statuspage"],
++            "affected_components": ["Public API"],
+         }
+diff --git a/tests/test_service.py b/tests/test_service.py
+index d6696f0..f414f4c 100644
+--- a/tests/test_service.py
++++ b/tests/test_service.py
+@@ -33,3 +33,41 @@ def test_summary_counts_open_and_major_incidents() -> None:
+     assert summary.open_count == 1
+     assert summary.major_open == 1
+     assert summary.sources == ["statuspage"]
++    assert summary.affected_components == ["Public API"]
++
++
++def test_summary_affected_components_open_only_unique_and_sorted() -> None:
++    incidents = [
++        Incident(
++            id="inc_2001",
++            source="statuspage",
++            title="API and dashboard issues",
++            impact="major",
++            status="investigating",
++            component_names=["Webhooks", "Dashboard"],
++            started_at="2026-03-27T11:30:00Z",
++            resolved_at=None,
++        ),
++        Incident(
++            id="inc_2002",
++            source="statuspage",
++            title="API partial outage",
++            impact="critical",
++            status="identified",
++            component_names=["Public API", "Webhooks"],
++            started_at="2026-03-27T12:00:00Z",
++            resolved_at=None,
++        ),
++        Incident(
++            id="inc_2003",
++            source="statuspage",
++            title="Resolved cache blip",
++            impact="minor",
++            status="resolved",
++            component_names=["Cache"],
++            started_at="2026-03-26T08:15:00Z",
++            resolved_at="2026-03-26T09:05:00Z",
++        ),
++    ]
++    summary = summarize_incidents(incidents)
++    assert summary.affected_components == ["Dashboard", "Public API", "Webhooks"]

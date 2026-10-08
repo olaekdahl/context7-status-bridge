@@ -11,9 +11,17 @@ def summarize_incidents(incidents: list[Incident]) -> IncidentSummary:
         if incident.impact in {"major", "critical"}
     ]
     sources = sorted({incident.source for incident in incidents})
+    affected_components = sorted(
+        {
+            name
+            for incident in open_incidents
+            for name in incident.component_names
+        }
+    )
     return IncidentSummary(
         total=len(incidents),
         open_count=len(open_incidents),
         major_open=len(major_open),
         sources=sources,
+        affected_components=affected_components,
     )
