@@ -1,0 +1,33 @@
+{
+  "page": {
+    "id": "page_123",
+    "name": "Northstar Cloud"
+  },
+  "incidents": [
+    {
+      "id": "inc_1001",
+      "name": "US API latency",
+      "status": "investigating",
+      "impact": "major",
+      "created_at": "2026-03-27T11:30:00Z",
+      "updated_at": "2026-03-27T12:00:00Z",
+      "resolved_at": null,
+      "components": [
+        {"name": "Public API"},
+        {"name": "Background Jobs"}
+      ]
+    },
+    {
+      "id": "inc_1002",
+      "name": "Webhook delivery delay",
+      "status": "resolved",
+      "impact": "minor",
+      "created_at": "2026-03-26T08:15:00Z",
+      "updated_at": "2026-03-26T09:05:00Z",
+      "resolved_at": "2026-03-26T09:05:00Z",
+      "components": [
+        {"name": "Webhooks"}
+      ]
+    }
+  ]
+}

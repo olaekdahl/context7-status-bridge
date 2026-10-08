@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local runtime state, credentials, and generated package metadata
+data/*.db
+data/*.db-*
+.env
+.env.*
+*.egg-info/
