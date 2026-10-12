@@ -1,0 +1,11 @@
+---
+description: Rules for adding or changing status summary fields
+globs: src/status_bridge/models.py,src/status_bridge/service.py,src/status_bridge/cli.py,tests/test_service.py,tests/test_api_incidents.py
+alwaysApply: false
+---
+
+- read AGENTS.md and docs/architecture.md before editing a summary field
+- keep the field derived from open incidents unless the task says otherwise
+- update the summary model, the service, the CLI output, and a focused test together
+- keep the diff limited to those files unless a real defect forces another edit
+- run uv run pytest tests/test_service.py and then uv run pytest
