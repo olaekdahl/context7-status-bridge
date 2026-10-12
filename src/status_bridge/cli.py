@@ -18,6 +18,7 @@ class SummaryOutput:
     major_open: int
     sources: list[str]
     affected_components: list[str]
+    open_titles: list[str]
 
 
 def import_fixture() -> int:
