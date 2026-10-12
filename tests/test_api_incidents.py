@@ -59,4 +59,5 @@ def test_incidents_summary_endpoint(tmp_path: Path, monkeypatch) -> None:
             "major_open": 1,
             "sources": ["statuspage"],
             "affected_components": ["Public API"],
+            "open_titles": ["API latency"],
         }

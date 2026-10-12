@@ -18,10 +18,12 @@ def summarize_incidents(incidents: list[Incident]) -> IncidentSummary:
             for name in incident.component_names
         }
     )
+    open_titles = sorted({incident.title for incident in open_incidents})
     return IncidentSummary(
         total=len(incidents),
         open_count=len(open_incidents),
         major_open=len(major_open),
         sources=sources,
         affected_components=affected_components,
+        open_titles=open_titles,
     )
